@@ -51,7 +51,12 @@ jobs:
         run: |
           docker run -d --name renderer -p 8080:8080 "$(head -n1 <<< "$TAGS")"
           for i in $(seq 1 30); do curl -sf localhost:8080/healthz && break; sleep 1; done
-          curl -sf -o og.png "localhost:8080/og.png?fit=esf1:CgUIARDLBA"
-          file og.png | grep -q PNG
+          status=$(curl -s -o og.png -w "%{http_code}" "localhost:8080/og.png?fit=esf1:CgUIARDLBA")
+          if [ "$status" != 200 ] || ! file og.png | grep -q PNG; then
+            echo "::error::Got $status"
+            cat og.png
+            docker logs renderer
+            exit 1
+          fi
         env:
           TAGS: ${{ steps.meta.outputs.tags }}
