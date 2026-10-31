@@ -49,7 +49,8 @@ cached.
 
 ## Running
 
-The image is `ghcr.io/eveshipfit/preview-renderer:latest`, built and published on every push to `main`.
+The image is `ghcr.io/eveshipfit/preview-renderer:latest` (amd64 and arm64), built and published on every push to
+`main`.
 
 ```sh
 docker compose up -d

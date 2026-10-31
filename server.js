@@ -54,7 +54,13 @@ async function render(site, fit) {
     const url = new URL(`https://${site}/og`);
     url.searchParams.set("fit", fit);
     await page.goto(url.href, { timeout: TIMEOUT });
-    await page.locator("body[data-ready]").waitFor({ state: "attached", timeout: TIMEOUT });
+    await page
+      .locator("body[data-ready]")
+      .waitFor({ state: "attached", timeout: TIMEOUT })
+      .catch(async (error) => {
+        const text = await page.locator("body").innerText({ timeout: 1000 }).catch(() => "");
+        throw new Error(`${page.url()} did not get ready; it shows: ${text.slice(0, 200)}`, { cause: error });
+      });
     if ((await page.locator("body").getAttribute("data-ready")) !== "true") return null;
     return await page.screenshot({ type: "png" });
   } finally {
