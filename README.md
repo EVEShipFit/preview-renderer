@@ -1,9 +1,34 @@
 # Preview Renderer
 
-To integrate with Discord, Twitter, etc, we need to be able to generate a PNG image for a given EVE Online fit.
-This repository does exactly that: feed it a fit, and it will generate a PNG image that shows that fit + statistics.
+Makes the image shown when an [EVEShip.fit](https://eveship.fit) fit link is shared on Discord, Twitter, etc.
 
-## How does it work?
+It screenshots the site's `/og?fit=...` page with Playwright, keeping one browser running.
 
-This is a very simple server that starts a Puppeteer with Chromium, to fetch the fit from [EVEShip.fit](https://eveship.fit) and create a screenshot of that.
-This screenshot is then returned to the user.
+## Usage
+
+```
+GET /og.jpg?site=eveship.fit&v=<version>&fit=<fit link>
+```
+
+- `site`: `eveship.fit` (default) or `next.eveship.fit`.
+- `v`: ignored; changes the URL, and so the cache, per deploy.
+- `/?fit=...` is the same, for links from before `/og.jpg`.
+
+Images are cached for a year, fits that don't load for an hour. Cloudflare's cache sits in front.
+
+## Running
+
+```sh
+docker compose up -d
+```
+
+See [compose.yaml](compose.yaml). The image is `ghcr.io/eveshipfit/preview-renderer:latest`, built on every push to
+`main`.
+
+Locally:
+
+```sh
+npm ci
+npx playwright install --only-shell chromium
+npm start
+```
