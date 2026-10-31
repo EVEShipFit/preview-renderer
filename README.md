@@ -7,10 +7,10 @@ an image of the fit next to the link. This server makes that image.
 
 1. A fit link (`https://eveship.fit/?fit=...`) is shared.
 2. The site's Worker adds an `og:image` tag to the page, pointing to this server:
-   `https://preview.eveship.fit/og.jpg?site=eveship.fit&v=<version>&fit=...`.
+   `https://preview.eveship.fit/og.png?site=eveship.fit&v=<version>&fit=...`.
 3. Cloudflare's cache sits in front of this server. If the image was made before, it is served from there.
 4. Otherwise this server opens `https://<site>/og?fit=...` in a headless Chromium, waits until the page sets
-   `data-ready` on its `<body>`, and returns a 1200×630 JPEG screenshot of it.
+   `data-ready` on its `<body>`, and returns a 1200×630 PNG screenshot of it.
 
 The `/og` page is part of [EVEShip.fit](https://github.com/EVEShipFit/eveship.fit) itself, so the image always
 matches the site.
@@ -18,7 +18,7 @@ matches the site.
 ## Requests
 
 ```
-GET /og.jpg?site=<site>&v=<version>&fit=<fit link>
+GET /og.png?site=<site>&v=<version>&fit=<fit link>
 ```
 
 | Parameter | Meaning |
@@ -70,4 +70,4 @@ npx playwright install --only-shell chromium
 npm start
 ```
 
-Then open `http://localhost:8080/og.jpg?fit=esf1:CgUIARDLBA`.
+Then open `http://localhost:8080/og.png?fit=esf1:CgUIARDLBA`.

@@ -46,7 +46,7 @@ function release() {
   else next();
 }
 
-/** A JPEG of the OG page of the fit on the site; null when the fit does not load. */
+/** A PNG of the OG page of the fit on the site; null when the fit does not load. */
 async function render(site, fit) {
   const context = await (await launch()).newContext({ viewport: { width: WIDTH, height: HEIGHT } });
   try {
@@ -56,7 +56,7 @@ async function render(site, fit) {
     await page.goto(url.href, { timeout: TIMEOUT });
     await page.locator("body[data-ready]").waitFor({ state: "attached", timeout: TIMEOUT });
     if ((await page.locator("body").getAttribute("data-ready")) !== "true") return null;
-    return await page.screenshot({ type: "jpeg", quality: 90 });
+    return await page.screenshot({ type: "png" });
   } finally {
     await context.close();
   }
@@ -76,9 +76,9 @@ function image(site, fit) {
 async function renderLimited(site, fit) {
   if (!(await acquire())) return { status: 503, cache: CACHE_NONE, body: "Too busy." };
   try {
-    const jpeg = await render(site, fit);
-    if (jpeg === null) return { status: 404, cache: CACHE_BROKEN, body: "This fit could not load." };
-    return { status: 200, cache: CACHE_IMAGE, type: "image/jpeg", body: jpeg };
+    const png = await render(site, fit);
+    if (png === null) return { status: 404, cache: CACHE_BROKEN, body: "This fit could not load." };
+    return { status: 200, cache: CACHE_IMAGE, type: "image/png", body: png };
   } catch (error) {
     console.error(error);
     return { status: 503, cache: CACHE_NONE, body: "The image could not be made." };
@@ -95,7 +95,7 @@ function send(response, { status, cache, type = "text/plain; charset=utf-8", bod
 const server = createServer(async (request, response) => {
   const url = new URL(request.url, "http://localhost");
   if (url.pathname === "/healthz") return send(response, { status: 200, cache: CACHE_NONE, body: "OK" });
-  if (url.pathname !== "/og.jpg" && url.pathname !== "/") {
+  if (url.pathname !== "/og.png" && url.pathname !== "/") {
     return send(response, { status: 404, cache: CACHE_BROKEN, body: "Not found." });
   }
 
