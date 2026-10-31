@@ -99,7 +99,12 @@ function send(response, { status, cache, type = "text/plain; charset=utf-8", bod
 }
 
 const server = createServer(async (request, response) => {
-  const url = new URL(request.url, "http://localhost");
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    response.setHeader("Allow", "GET, HEAD");
+    return send(response, { status: 405, cache: CACHE_NONE, body: "Method not allowed." });
+  }
+  const url = URL.parse(request.url, "http://localhost");
+  if (url === null) return send(response, { status: 400, cache: CACHE_BROKEN, body: "Invalid request." });
   if (url.pathname === "/healthz") return send(response, { status: 200, cache: CACHE_NONE, body: "OK" });
   if (url.pathname !== "/og.png" && url.pathname !== "/") {
     return send(response, { status: 404, cache: CACHE_BROKEN, body: "Not found." });
@@ -116,6 +121,6 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 process.on("SIGTERM", async () => {
   server.close();
-  await (await browser)?.close();
+  await (await browser?.catch(() => undefined))?.close();
   process.exit(0);
 });
