@@ -42,7 +42,6 @@ jobs:
           docker run -d --name renderer -p 8080:8080 preview-renderer:test
           for i in $(seq 1 30); do curl -sf localhost:8080/healthz && break; sleep 1; done
           [ "$(curl -s -o /dev/null -w "%{http_code}" "localhost:8080/og.png?site=example.com&fit=x")" = 400 ]
-          # Cloudflare challenges GitHub's runners; a page that loads but doesn't get ready still shows the browser works.
           status=$(curl -s -o og.png -w "%{http_code}" "localhost:8080/og.png?fit=esf1:CgUIARDLBA")
           if [ "$status" = 200 ] && file og.png | grep -q PNG; then exit 0; fi
           docker logs renderer 2>&1 | tee renderer.log
