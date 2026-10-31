@@ -1,0 +1,7 @@
+services:
+  preview-renderer:
+    image: ghcr.io/eveshipfit/preview-renderer:latest
+    restart: unless-stopped
+    init: true
+    ports:
+      - "8080:8080"
