@@ -2,7 +2,7 @@ import { createServer } from "node:http";
 import { chromium } from "playwright";
 
 const PORT = Number(process.env.PORT ?? 8080);
-const SITES = new Set(["eveship.fit", "next.eveship.fit"]);
+const SITES = new Set(["eveship.fit", "next.eveship.fit", "sisi.eveship.fit"]);
 const WIDTH = 1200;
 const HEIGHT = 630;
 const CONCURRENCY = 3;

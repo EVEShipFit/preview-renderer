@@ -23,7 +23,7 @@ GET /og.png?site=<site>&v=<version>&fit=<fit link>
 
 | Parameter | Meaning |
 | --------- | ------- |
-| `site` | `eveship.fit` (default) or `next.eveship.fit`. Other sites are refused. |
+| `site` | `eveship.fit` (default), `next.eveship.fit` or `sisi.eveship.fit`. Other sites are refused. |
 | `v` | Not used by the server. The site puts its version here, so each deploy gets fresh images from the cache. |
 | `fit` | The fit link, as in `?fit=` on the site. |
 
